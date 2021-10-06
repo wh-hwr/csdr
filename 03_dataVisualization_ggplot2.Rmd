@@ -1,0 +1,233 @@
+---
+title: "Datenvisualisierung mit ggplot2"
+author: "Dr. Wasilios Hariskos"
+date: ""
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Pakete laden
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# install.packages("ggplot2")
+library(ggplot2) # for data visualization
+library(gapminder) # dataset
+library(dplyr) # for data tranformation
+```
+
+# Ein Streudiagramm mit fünf Dimensionen erstellen
+
+## Datenvorbereitung
+
+```{r echo=TRUE}
+gapminder_1997 <- gapminder %>%
+  filter(year == 1997)
+
+glimpse(gapminder_1997)
+```
+
+## Erstellung eines ggplot-Objekts, ...
+
++ spezifiziere den Datensatz gapminder_1997 als Input,
++ füge ein point geom hizu,
++ bilde `gdpPercap` auf die `x` Aesthetik ab,
++ bilde `lifeExp` auf die `y` Aesthetik ab.
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) + 
+  geom_point(mapping = aes(x = gdpPercap, 
+                           y = lifeExp))
+```
+
+## Skaliere die x-Achse auf log10
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_point(mapping = aes(x = gdpPercap,
+                           y = lifeExp)) +
+  scale_x_log10()
+```
+
++ Logarthmische Skalierung: Die Werte $1, 2, 3, ...$ auf der x-Achse werden mit Potenzen zur Basis von 10 ersetzt: $10^1, 10^2, 10^3$. 
+
++ Konsequenz 1: Die Abstände zwischen zwei Markierungen auf der x-Achse sind nicht mehr gleich groß, sondern nur die Abstände zwischen den Exponenten.
+
++ Konsequenz 2: Dadurch werden die kleinen Durchschnittseinkommen (`gdpPercap` < $10000$) besser sichtbar.
+
+
+```{r echo=TRUE}
+(x <- c(10, 100, 1000, 10000, 100000))
+
+log10(x) # puts elements of x equidistant (labels of x remain)
+```
+
+## Abbildung von continent auf die color Aesthetik
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_point(mapping = aes(x = gdpPercap,
+                           y = lifeExp,
+                           color = continent)) +
+  scale_x_log10()
+```
+
++ Die Aesthetik `color` wird für kategoriale Variablen wie `continent` genutzt. 
++ Die Legende zeigt die Abbildung zwischen Aesthetik `color` und der Variable `continent`.
++ Die rot (blau) gefärbten afrikanischen (europäischen) Länder haben die geringsten (höchsten) Durschnittseinkommen `gdpPercap`.
+
+## Abbildung von population auf die size Aesthetik
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_point(mapping = aes(x = gdpPercap,
+                           y = lifeExp,
+                           color = continent,
+                           size = pop)) +
+  scale_x_log10()
+```
+
+Die Aesthetik `size` wir für numerische Variablen wie `pop` genutzt. Einwohnerstärkere Länder werden durch größere Punkte dargestellt.
+
+## Nutzung von Facetten zur Darstellung der Entwicklung über die Zeit
+
+```{r echo=TRUE}
+ggplot(data = gapminder) +
+  geom_point(mapping = aes(x = gdpPercap,
+                           y = lifeExp,
+                           color = continent,
+                           size = pop)) +
+  scale_x_log10() +
+  facet_wrap(facets = ~ year,
+             nrow = 3)
+```
+
+Die Funktion `facet_wrap()` unterteilt den plot in subplots, wobei jeder subplot ein anderes Jahr repräsentiert. 
+Die Tilde in der Formel `facets = ~ year` bedeutet `by year`.
+
+## Zusammenfassung
+
++ Die Funktion `ggplot()` erstellt ein ggplot Objekt. 
++ Das Argument `data = gapminder_1997` gibt die Datenquelle an.
++ Die Funktion `geom_point()`erstellt ein Streudiagramm.
++ Die Variablen `gdpPercap` und `lifeExp` werden auf der `x` und  `y` Aesthetik dargestellt.
++ Die Funktion `scale_x_log10()` verbessert die Darstellung niedriger Durschnittseinkommen.
++ Die Variablen `continent` und `pop` werden auf den `color` und `size` Aesthetiken dargestellt.
++ Bei Nutzung des gesamten Datensatzes `gapminder` kann eine fünfte Dimension `year` durch die Funktion `facet_wrap()` auf Facetten abgebildet werden.
+
+# Liniendiagramm für Zeitreihen
+
+## Beispiel 1
+
+```{r echo=TRUE}
+by_year <- gapminder %>%
+  group_by(year) %>%
+  summarize(meanGdpPercap =  mean(gdpPercap))
+```
+
+```{r echo=TRUE}
+ggplot(data = by_year) +
+  geom_line(mapping = aes(x = year, y = meanGdpPercap)) +
+  expand_limits(y = 0)
+```
+
+## Beispiel 2
+
+```{r echo=TRUE}
+by_year_continent <- gapminder %>%
+  group_by(year, continent) %>%
+  summarize(meanGdpPercap =  mean(gdpPercap))
+```
+
+
+```{r echo=TRUE}
+ggplot(data = by_year_continent) +
+  geom_line(mapping = aes(x = year,
+                          y = meanGdpPercap,
+                          color = continent)) +
+  expand_limits(y = 0)
+```
+
+# Säulendiagram für vergleichende Statistiken über mehrere Kategorien
+
+```{r echo=TRUE}
+europe1997 <- gapminder %>%
+  filter(year == 1997,
+         continent == "Europe",
+         pop > 50e6)
+
+europe1997
+```
+
+```{r echo=TRUE}
+ggplot(data = europe1997) +
+geom_col(mapping = aes(x = country,
+                       y = lifeExp))
+```
+
+# Histogramme zur Beschreibung von Verteilungen numerischer Variablen
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_histogram(mapping = aes(x = lifeExp))
+```
+
+Passe die Korbgröße auf 5 Jahre mit dem Argument `binwidth` an. Welche Information bekommst man zusätzlich, wenn als die `fill` Aesthetik auf `continent` setzt?
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_histogram(mapping = aes(x = lifeExp,
+                               fill = continent),
+                 binwidth = 5)
+```
+
+# Boxplots zum Vergleich von Verteilungen einer numerischen Variablen über verschiedene Kategorien
+
+## Die Verteilung von Lebenserwartung über die Kontinente
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_boxplot(mapping = aes(x = continent,
+                             y = lifeExp))
+```
+
+Der Boxplot visualisiert alle Ausreißer und fünf zusammenfassende Statistiken:
+
++ Horizontale Linie: Der Median der Verteilung
++ Beginn (Ende) der Box: Unteres (oberes) Quartil
++ Untere (obere) vertikale Linie / Whisker
+
+Für mehr Information siehe `?geom_boxplot`.
+
+## Vertiefung
+
+```{r}
+library(skimr)
+skim(gapminder_1997)
+```
+
+## Erklärung des Boxplots
+
+|Kennwert |	Beschreibung | Lage im Box-Plot |
+|---------|--------------|------------------|
+|Minimum | Kleinster Wert = `p0` |	Ende des unteren Whiskers oder der südlichste Ausreißer |
+|Unteres Quartil |	25 % der Datenwerte sind kleiner oder gleich `p25` |	Beginn der Box bei `p25`|
+|Median |	50 % der Datenwerte sind kleiner oder gleich `p50` | Fetter Strich innerhalb der Box |
+|Oberes Quartil |	75 % der Datenwerte sind kleiner oder gleich `p75` | Ende der Box |
+|Maximum | Größter Wert = `p100` |	Ende des oberen Whiskers oder der nördlichste Ausreißer |
+|Spannweite| Gesamter Wertebereich des Datensatzes `p100 - p0`	| Länge des gesamten Box-Plots (inklusive Ausreißer) |
+|Interquartilsabstand |	Wertebereich, in dem sich die mittleren 50 % der Daten befinden `p75 - p25`| Ausdehnung der Box|
+
+
+
+## Die Verteilung von gdpPercap über continent
+
+```{r echo=TRUE}
+ggplot(data = gapminder_1997) +
+  geom_boxplot(mapping = aes(x = continent,
+                             y = gdpPercap)) +
+  scale_y_log10() +
+  ggtitle(label = "Comparing GDP per capita across continents in 1997")
+```
