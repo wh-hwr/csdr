@@ -33,7 +33,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 <!-- Gut zu wissen: Wenn Sie einen Kurs auf Datacamp abschließen bekommen Sie als Bonus ein Zertifikat, das Sie ihrer Bewerbung bei einem Unternehmen anhängen oder auf LinkedIn hochladen können. -->
 
-# Folien und Skripte
+# Folien & Skripte
 + [Folien: Überblick und Lernziele](https://htmlpreview.github.io/?https://github.com/wh-hwr/csdr/blob/master/01_kursueberblick.html)
 + [Skript: Datenimport](https://github.com/wh-hwr/csdr/blob/master/Datenimport.R)
 + [Skript: Programmieren](https://github.com/wh-hwr/csdr/blob/master/Programmieren.R)
