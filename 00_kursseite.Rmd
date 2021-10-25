@@ -59,6 +59,6 @@ knitr::opts_chunk$set(echo = FALSE)
 # Literatur für das Selbststudium
 
 + [Hands-On Programming with R](https://rstudio-education.github.io/hopr/)
-+ [R for Data Science](r4ds.had.co.nz)
++ [R for Data Science](https://r4ds.had.co.nz)
 + [Introduction to Econometrics with R](https://www.econometrics-with-r.org/)
 + [Discovering Statistics Using R](https://www.amazon.de/Discovering-Statistics-Using-Andy-Field/dp/1446200469)
