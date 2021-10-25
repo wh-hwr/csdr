@@ -53,10 +53,12 @@ knitr::opts_chunk$set(echo = FALSE)
 + [Programmiersprache R und Benutzeroberfläche R Studio installieren](https://rstudio.com/products/rstudio/download)
 <!-- + [Git für die Version Control (zur Zusammenarbeit an einem Projekt) installieren](https://git-scm.com/downloads) -->
 + [Optional: Weitere Infos zu R, RStudio und Git](https://www.geo.uzh.ch/microsite/reproducible_research/post/rr-rstudio-git/)
++ [Optional: RStudio Cloud](https://rstudio.cloud/)
 <!-- + [Mein erstes Skript](https://raw.githubusercontent.com/wasilios-hariskos/csd-berlin20/master/01-mein-erstes-skript.R) -->
 
 # Literatur für das Selbststudium
 
++ [Hands-On Programming with R](https://rstudio-education.github.io/hopr/)
 + [R for Data Science](r4ds.had.co.nz)
 + [Introduction to Econometrics with R](https://www.econometrics-with-r.org/)
 + [Discovering Statistics Using R](https://www.amazon.de/Discovering-Statistics-Using-Andy-Field/dp/1446200469)
